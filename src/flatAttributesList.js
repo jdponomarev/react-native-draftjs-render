@@ -7,7 +7,13 @@
 // @flow
 
 const sortInteger = (a: number, b: number): number => a - b;
-const isLink = (element: Object): boolean => Object.prototype.hasOwnProperty.call(element, 'key');
+const isLink = (element: Object): boolean => {
+  // console.log("element ",element,"   ",Object.prototype.hasOwnProperty.call(element, 'key'));
+  if(Object.prototype.hasOwnProperty.call(element, 'key') && element.length && element.length > 1){
+    return true
+  }
+  return false;
+};
 
 const convertStylesIntoNumbers = (styles: Array<Object>): Array<number> => {
   const numbers = [];
