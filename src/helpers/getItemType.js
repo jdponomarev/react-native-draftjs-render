@@ -9,7 +9,7 @@
 const getItemType = (item: Object): string => {
   if (item.style) {
     if (Array.isArray(item.style)) {
-      return item.style.map((i: string): string => i.toLowerCase());
+      return item.style.map((i: string): string => i ? i.toLowerCase() : i);
     }
     return item.style.toLowerCase();
   }
