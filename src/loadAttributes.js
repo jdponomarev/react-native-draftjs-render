@@ -58,7 +58,7 @@ const loadAttributes = (params: ParamsType): any => {
   attributes = attributes.sort((a: Object, b: Object): number => a.offset - b.offset);
 
   if (attributes.length) {
-    const attrs = flatAttributesList(attributes);
+    const attrs = flatAttributesList(attributes, entityMap);
 
     const defaultLineHeight = defaultStyles[type] && defaultStyles[type].lineHeight;
     const customLineHeight = customStyles && customStyles[type] && customStyles[type].lineHeight;
