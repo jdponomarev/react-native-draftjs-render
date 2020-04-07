@@ -7,14 +7,12 @@
 // @flow
 
 const sortInteger = (a: number, b: number): number => a - b;
-const isLink = (element: Object): boolean => {
-  // console.log("element ",element,"   ",Object.prototype.hasOwnProperty.call(element, 'key'));
-  if(Object.prototype.hasOwnProperty.call(element, 'key') && element.length && element.length > 1){
-    return true
+const isLink = (element: Object, entityMap: Object): boolean => {
+  if (Object.prototype.hasOwnProperty.call(element, 'key') && element.length && element.length > 1) {
+    return entityMap[element.key].type && entityMap[element.key].type.toLowerCase() === "link"
   }
   return false;
 };
-
 const convertStylesIntoNumbers = (styles: Array<Object>): Array<number> => {
   const numbers = [];
   styles.forEach((style: Object) => {
@@ -36,6 +34,7 @@ const createArrayWithSegments = (numbersList: Array<number>): Array<Array<number
 const addTypeToSegments = (
   segments: Array<Array<number>>,
   originalStyles: Array<Object>,
+  entityMap: Object
 ): Array<Object> => {
   const objectList = [];
   segments.forEach((segment: Array<number>) => {
@@ -43,7 +42,7 @@ const addTypeToSegments = (
     originalStyles.forEach((style: Object) => {
       const length = segment[0] + segment[1];
       if (length > style.offset && length <= style.offset + style.length) {
-        if (isLink(style)) {
+        if (isLink(style, entityMap)) {
           types.push('link');
           segment.push(style.key);
         } else {
@@ -73,22 +72,22 @@ const isOverlap = (styles: Array<Object>): any => {
   return found;
 };
 
-const checkSingleLinkElement = (item: Object) => {
-  if (isLink(item)) {
+const checkSingleLinkElement = (item: Object, entityMap: Object) => {
+  if (isLink(item, entityMap)) {
     Object.assign(item, { style: 'link' });
   }
 };
 
-const flatAttributesList = (attrsList: Array<Object>): Array<Object> => {
+const flatAttributesList = (attrsList: Array<Object>, entityMap: Object): Array<Object> => {
   if (attrsList.length === 1 || !isOverlap(attrsList)) {
-    checkSingleLinkElement(attrsList[0]);
+    checkSingleLinkElement(attrsList[0], entityMap);
     return attrsList;
   }
   const numbersList = convertStylesIntoNumbers(attrsList);
   const sortedNumbersList = numbersList.sort(sortInteger);
   const uniqueSortedNumbersList = Array.from(new Set(sortedNumbersList));
   const segments = createArrayWithSegments(uniqueSortedNumbersList);
-  const finalObject = addTypeToSegments(segments, attrsList);
+  const finalObject = addTypeToSegments(segments, attrsList, entityMap);
   return finalObject;
 };
 
