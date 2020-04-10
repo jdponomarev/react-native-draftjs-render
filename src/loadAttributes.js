@@ -60,13 +60,14 @@ const loadAttributes = (params: ParamsType): any => {
   if (attributes.length) {
     const attrs = flatAttributesList(attributes, entityMap);
 
+    const customStylesByType = customStyles[type] || {};
     const defaultLineHeight = defaultStyles[type] && defaultStyles[type].lineHeight;
     const customLineHeight = customStyles && customStyles[type] && customStyles[type].lineHeight;
     const lineHeight = { lineHeight: customLineHeight || defaultLineHeight };
 
     if (attrs[0].offset > 0) {
       const element = (
-        <Text style={lineHeight} key={generateKey()} {...textProps}>
+        <Text style={[lineHeight, customStylesByType]} key={generateKey()} {...textProps}>
           {substring(text, 0, attrs[0].offset)}
         </Text>
       );
@@ -80,7 +81,7 @@ const loadAttributes = (params: ParamsType): any => {
         const subText = substring(text, offset, item.offset);
 
         if (subText.length) {
-          elementList.push(<Text key={generateKey()} {...textProps}>{subText}</Text>);
+          elementList.push(<Text style={customStylesByType} key={generateKey()} {...textProps}>{subText}</Text>);
         }
       }
 
@@ -107,7 +108,7 @@ const loadAttributes = (params: ParamsType): any => {
     const subText = substring(text, offset, length(text));
 
     if (subText.length) {
-      elementList.push(<Text key={generateKey()} {...textProps}>{subText}</Text>);
+      elementList.push(<Text style={customStylesByType} key={generateKey()} {...textProps}>{subText}</Text>);
     }
   } else {
     elementList.push(text);
